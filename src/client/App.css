@@ -1,0 +1,19 @@
+body {
+  background: url('./assets/img/theme.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+@font-face {
+    font-family: 'LapsusProBold';
+    src: url('./assets/font/LapsusPro-Bold.otf') format('opentype');
+  }
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "LapsusProBold";
+}

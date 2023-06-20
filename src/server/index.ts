@@ -5,6 +5,8 @@ import { createExpressServer, useContainer } from "routing-controllers";
 import { UserController } from "./user/user.controller";
 import { connect } from "mongoose";
 import { AuthController } from "./auth/auth.controller";
+import { authorizationChecker } from "./auth/authorization.checker";
+import { currentUserChecker } from "./auth/currentuser.checker";
 dotenv.config();
 
 useContainer(Container);
@@ -12,6 +14,8 @@ useContainer(Container);
 createExpressServer({
   controllers: [UserController, AuthController],
   cors: true,
+  authorizationChecker,
+  currentUserChecker,
 }).listen(process.env.PORT, process.env.HOST, async () => {
   await connect(process.env.DATABASE_URL ?? "");
   console.log(

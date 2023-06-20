@@ -28,5 +28,24 @@ export class AuthService {
     throw new BadRequestError();
   }
 
-  async register(registerdto: RegisterDto) {}
+  async register(registerdto: RegisterDto) {
+    const verifyUser = await this.userService.findOne(
+      registerdto.username ?? ""
+    );
+    if (verifyUser.success) {
+      throw new BadRequestError("Nome de usuário já cadastrado");
+    } else {
+      registerdto.score = 0;
+      const user = await this.userService.create(registerdto);
+      const payload = {
+        username: user.data?.username,
+        name: user.data?.name,
+      };
+      const token = this.jwtsecret.sign(payload);
+      return {
+        token,
+        user,
+      };
+    }
+  }
 }
