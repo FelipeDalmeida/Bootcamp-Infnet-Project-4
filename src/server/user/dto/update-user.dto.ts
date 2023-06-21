@@ -15,4 +15,7 @@ export class UpdateUserDto {
 
   @Min(0)
   score: number | undefined;
+
+  @Min(0)
+  matches: number | undefined;
 }

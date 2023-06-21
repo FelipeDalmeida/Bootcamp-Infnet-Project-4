@@ -36,6 +36,7 @@ export class AuthService {
       throw new BadRequestError("Nome de usuário já cadastrado");
     } else {
       registerdto.score = 0;
+      registerdto.matches = 0;
       const user = await this.userService.create(registerdto);
       const payload = {
         username: user.data?.username,
