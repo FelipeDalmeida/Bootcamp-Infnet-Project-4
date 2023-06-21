@@ -1,31 +1,31 @@
-import { lazy, Suspense, useState, useEffect } from 'react';
-import { unstable_HistoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { browserHistory } from './service/browserHistory';
-import './App.css';
-import Header from './pages/Header';
+import { lazy, Suspense, useState, useEffect } from "react";
+import {
+  unstable_HistoryRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+import { browserHistory } from "./service/browserHistory";
+import "./App.css";
+import Header from "./pages/Header";
 // import Load from './components/load/Load';
 
 function App() {
-
-
-  const Login = lazy(() => import('./pages/auth/Login'))
-
+  const Login = lazy(() => import("./pages/auth/Login"));
+  const Register = lazy(() => import("./pages/auth/Registro"));
   return (
     <Router history={browserHistory}>
-  
-    <Suspense fallback={"<Load />"}>
-
-      <Header />
-      {/* <LoadAuthUser />
+      <Suspense fallback={"<Load />"}>
+        <Header />
+        {/* <LoadAuthUser />
       <EmailVerificationModal/> */}
-      
-      <Routes>
-      <Route path="/" element={<Login />} />
-        {/* <Route path="*" element={<NotFound />} /> */}
-        <Route path="/login" element={<Login />} />
-        {/* <Route path="/registro" element={<Register />} />
-        <Route path="/" element={<Login />} />
-        <Route path="/cadastro" element={<CadastraPaciente />} />
+
+        <Routes>
+          <Route path="/" element={<Login />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Register />} />
+          <Route path="/" element={<Login />} />
+          {/* <Route path="/cadastro" element={<CadastraPaciente />} />
         <Route path="/pacientes" element={<ListaPacientes />} />
         <Route path="/pacientes/:id" element={<PacientePage />} />
         <Route path="/cadastrocompcorp/:id" element={<CadastraAvCompCorp />} />
@@ -36,12 +36,10 @@ function App() {
         <Route path="/usuario" element={<Usuario />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/password-change" element={<PasswordChange />} />         */}
-
-      </Routes>
-    </Suspense>
-  </Router>
-
-  )
+        </Routes>
+      </Suspense>
+    </Router>
+  );
 }
 
-export default App
+export default App;

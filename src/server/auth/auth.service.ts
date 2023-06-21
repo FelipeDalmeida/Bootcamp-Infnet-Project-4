@@ -14,7 +14,7 @@ export class AuthService {
 
   async login(logindto: LoginDto) {
     const user = await this.userService.findOne(logindto.username ?? "");
-    if (user && user.data?.password === logindto.password) {
+    if (user.success && user.data?.password === logindto.password) {
       const payload = {
         username: user.data?.username,
         name: user.data?.name,
@@ -25,7 +25,7 @@ export class AuthService {
         user,
       };
     }
-    throw new BadRequestError();
+    throw new BadRequestError("Usuário não encontrado");
   }
 
   async register(registerdto: RegisterDto) {

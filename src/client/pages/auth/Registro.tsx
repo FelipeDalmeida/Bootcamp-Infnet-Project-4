@@ -1,94 +1,155 @@
-import CriaForm from "../../components/Criaform"
-import Input from "../../components/Input"
-import Text from "../../components/Text"
-import Button from "../../components/Button"
-import { useState } from "react"
-import Img from "../../components/Img"
-import Logo from '../../assets/img/logo192.png'
-import { useNavigate } from "react-router-dom"
-import { useAxios } from "../../service/useAxios"
-import { criaNome } from "../../service/stringManipulation"
-import { AuthToken } from "../../service/authToken"
-import { useGlobalStore } from "../../service/useGlobalStore"
-import { register } from "../../service/api/register"
-import Container from "../../components/Container"
-
-//@TODO: Deletar ou o useAxios ou o API
+import Input from "../../components/Input";
+import Text from "../../components/Text";
+import Button from "../../components/Button";
+import { useState } from "react";
+import Img from "../../components/Img";
+import Logo from "../../assets/img/logo.png";
+import { useNavigate } from "react-router-dom";
+import { AuthToken } from "../../service/authToken";
+import { useGlobalStore } from "../../service/useGlobalStore";
+import Container from "../../components/Container";
+import { api } from "../../service/api/api";
 
 const text = {
-    labelEmail: "E-mail",
-    labelSenha: "Senha",
-    labelNome: "Nome",
-    labelConfirmEmail: "Confirme o e-mail",
-    labelTitle: "Registro",
-    labelButton: "Registrar",
-    labelButtonLogin: "Ir para Login"
-}
+  labelUsermae: "Username",
+  labelPassword: "Senha",
+  labelName: "Nome",
+  labelConfirmPassword: "Confirme a senha",
+  labelTitle: "Registro",
+  labelButton: "Registrar",
+  labelButtonLogin: "Ir para Login",
+  labelBadPassword: "Senhas não coincidem",
+};
 
 const Register = () => {
-    const navigate = useNavigate();
-    const goToPage = (page: string) => { navigate(`${page}`) }
+  const navigate = useNavigate();
+  const goToPage = (page: string) => {
+    navigate(`${page}`);
+  };
+  const setUser = useGlobalStore((state) => state.setUser);
+  const [registro, setRegistro] = useState({
+    name: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    senhaError: "",
+  });
 
-    const setUser = useGlobalStore((state) => state.setUser);
-    const [registro, setRegistro] = useState({ nome: "", email: "", password: "", error: "", confirmEmail: "", emailError: "" })
+  const registar = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setRegistro({ ...registro, senhaError: "" });
+    if (registro.password === registro.confirmPassword) {
+      const response = await api.post("/auth/register", {
+        name: registro.name,
+        password: registro.password,
+        username: registro.username,
+      });
+      console.log(response);
+      if (response.data.user.success) {
+        AuthToken.set(response.data.token);
+        setUser({ ...response.data.user.data, isAuthenticated: true });
+      }
 
-
-
-    const registar = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (registro.email === registro.confirmEmail) {
-
-            setRegistro({ ...registro, emailError: "" })
-
-            const response = await register({
-                nome: registro.nome,
-                email: registro.email,
-                password: registro.password
-            })
-            
-            if (response.success && response.accessToken) {
-                const { accessToken, user } = response;
-                AuthToken.set(accessToken)
-                setUser({ ...user, isAuthenticated: true });
-                goToPage("/cadastro")
-
-            } else {
-                setRegistro({ ...registro, error: "Erro no registro" })
-            }
-        } else {
-            setRegistro({ ...registro, emailError: "E-mail diferente!" })
-        }
-
-
-
-
+      goToPage("/");
+    } else {
+      setRegistro({ ...registro, senhaError: text.labelBadPassword });
     }
 
-    const inputs = [
-        <Input label={text.labelNome} type={"email"} value={registro.nome} onChange={(e) => setRegistro({ ...registro, nome: e.target.value })} />,
-        <Input label={text.labelEmail} type={"email"} value={registro.email} onChange={(e) => setRegistro({ ...registro, email: e.target.value })} />,
-        <Input label={text.labelConfirmEmail} type={"email"} value={registro.confirmEmail} onChange={(e) => setRegistro({ ...registro, confirmEmail: e.target.value })} error={registro.emailError} />,
-        <Input label={text.labelSenha} type={"password"} value={registro.password} onChange={(e) => setRegistro({ ...registro, password: e.target.value })} error={registro.error} />,
+    // if (registro.email === registro.confirmEmail) {
 
-    ]
+    //     setRegistro({ ...registro, emailError: "" })
 
-    return (
-        <Container
-            type={"auth"}
-            content={<>
-                <div className={"h-40 flex justify-center"}><Img img={Logo} /></div>
-                <Text className={"text-center mt-6 text-4xl"} type={"h1"} text={text.labelTitle} />
-                <CriaForm inputs={inputs} className={"my-2 grid-cols-1"} />
+    //     const response = await register({
+    //         nome: registro.nome,
+    //         email: registro.email,
+    //         password: registro.password
+    //     })
 
-                <div className={"mx-10 "}>
-                    <Button type={"submit"} title={text.labelButton} className={"m-0 my-3 p-2 w-full "} onClick={registar} />
-                    <Button type={"button"} title={text.labelButtonLogin} className={"m-0 my-3 p-2 w-full "} onClick={() => { goToPage('/') }} />
-                </div>
-            </>
-            }
-        />
-    )
-}
+    //     if (response.success && response.accessToken) {
+    //         const { accessToken, user } = response;
+    //         AuthToken.set(accessToken)
+    //         setUser({ ...user, isAuthenticated: true });
+    //         goToPage("/cadastro")
 
-export default Register
+    //     } else {
+    //         setRegistro({ ...registro, error: "Erro no registro" })
+    //     }
+    // } else {
+    //     setRegistro({ ...registro, emailError: "E-mail diferente!" })
+    //}
+  };
+
+  return (
+    <Container
+      type={"auth"}
+      content={
+        <>
+          <div className={"h-40 flex justify-center"}>
+            <Img img={Logo} />
+          </div>
+          <Text
+            className={"text-center mt-6 text-4xl"}
+            type={"h1"}
+            text={text.labelTitle}
+          />
+          <div className={"mx-8 grid my-2 grid-cols-1"}>
+            <Input
+              label={text.labelName}
+              type={"text"}
+              value={registro.name}
+              onChange={(e) =>
+                setRegistro({ ...registro, name: e.target.value })
+              }
+            />
+
+            <Input
+              label={text.labelUsermae}
+              type={"text"}
+              value={registro.username}
+              onChange={(e) =>
+                setRegistro({ ...registro, username: e.target.value })
+              }
+            />
+
+            <Input
+              label={text.labelPassword}
+              type={"password"}
+              value={registro.password}
+              onChange={(e) =>
+                setRegistro({ ...registro, password: e.target.value })
+              }
+            />
+
+            <Input
+              label={text.labelConfirmPassword}
+              type={"password"}
+              value={registro.confirmPassword}
+              onChange={(e) =>
+                setRegistro({ ...registro, confirmPassword: e.target.value })
+              }
+              error={registro.senhaError}
+            />
+          </div>
+          <div className={"mx-10 "}>
+            <Button
+              type={"submit"}
+              title={text.labelButton}
+              className={"m-0 my-3 p-2 w-full "}
+              onClick={registar}
+            />
+            <Button
+              type={"button"}
+              title={text.labelButtonLogin}
+              className={"m-0 my-3 p-2 w-full "}
+              onClick={() => {
+                goToPage("/");
+              }}
+            />
+          </div>
+        </>
+      }
+    />
+  );
+};
+
+export default Register;

@@ -34,19 +34,20 @@ api.interceptors.response.use(
     const status: number = error.request.status;
     if (status === 401) {
       AuthToken.remove();
-      toast(texts.unauthenticatedError);
+      toast(<Toast message={texts.unauthenticatedError} />);
       browserHistory.push("/");
     } else if (status === 400) {
       const data = error.response.data;
+
       if (data.errors) {
         const errors: string[] = data.errors
           .map(({ constraints }: any) => Object.values(constraints))
           .flat();
         for (const error of errors) {
-          Toast(error);
+          toast(<Toast message={error} />);
         }
       } else if (data.message) {
-        Toast(data.message);
+        toast(<Toast message={data.message} />);
       }
     }
   }
