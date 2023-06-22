@@ -2,28 +2,26 @@ import { Action } from "routing-controllers";
 import { JWTService } from "./jwt.service";
 import { UserRepository } from "../user/user.repository";
 
-const jtwService = new JWTService();
+const jwtService = new JWTService();
 const userRepository = new UserRepository();
 
 export async function authorizationChecker(action: Action) {
-  const { authorizarion } = action.request.headersn;
-
-  if (!authorizarion) {
+  const { authorization } = action.request.headers;
+  if (!authorization) {
     return false;
   }
 
-  const [bearer, token] = authorizarion.split(" ");
-
+  const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {
     return false;
   }
 
-  const paylod = jtwService.verify(token);
-  if (paylod === null) {
+  const payload = jwtService.verify(token);
+  if (payload === null) {
     return false;
   }
 
-  const user = await userRepository.findOne(paylod.username);
+  const user = await userRepository.findOne(payload.username);
   action.request.user = user;
   return true;
 }

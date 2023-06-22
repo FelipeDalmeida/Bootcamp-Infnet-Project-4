@@ -26,4 +26,8 @@ export class CreateUserDto {
   @Min(0)
   @IsOptional()
   matches: number | undefined;
+
+  @Min(0)
+  @IsOptional()
+  matches_won: number | undefined;
 }

@@ -12,12 +12,12 @@ import Header from "./pages/Header";
 function App() {
   const Login = lazy(() => import("./pages/auth/Login"));
   const Register = lazy(() => import("./pages/auth/Registro"));
+  const User = lazy(() => import("./pages/User"));
   return (
     <Router history={browserHistory}>
       <Suspense fallback={"<Load />"}>
         <Header />
-        {/* <LoadAuthUser />
-      <EmailVerificationModal/> */}
+        {/* <EmailVerificationModal/> */}
 
         <Routes>
           <Route path="/" element={<Login />} />
@@ -25,6 +25,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Register />} />
           <Route path="/" element={<Login />} />
+          <Route path="/usuario" element={<User />} />
           {/* <Route path="/cadastro" element={<CadastraPaciente />} />
         <Route path="/pacientes" element={<ListaPacientes />} />
         <Route path="/pacientes/:id" element={<PacientePage />} />

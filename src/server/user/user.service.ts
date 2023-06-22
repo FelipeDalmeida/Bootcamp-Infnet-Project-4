@@ -42,6 +42,7 @@ export class UserService {
   async create(createuserdto: CreateUserDto) {
     createuserdto.score = 0;
     createuserdto.matches = 0;
+    createuserdto.matches_won = 0;
     const user = await this.userRepository.create(createuserdto);
     if (user) {
       return {

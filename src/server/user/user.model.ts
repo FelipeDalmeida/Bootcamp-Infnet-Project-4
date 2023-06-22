@@ -6,6 +6,7 @@ export interface IUser {
   password: string;
   score: number;
   matches: number;
+  matches_won: number;
 }
 
 const userSchema = new Schema<IUser>({
@@ -33,6 +34,11 @@ const userSchema = new Schema<IUser>({
     min: 0,
   },
   matches: {
+    type: Schema.Types.Number,
+    required: true,
+    min: 0,
+  },
+  matches_won: {
     type: Schema.Types.Number,
     required: true,
     min: 0,

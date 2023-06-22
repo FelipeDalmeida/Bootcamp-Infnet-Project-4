@@ -37,6 +37,7 @@ export class AuthService {
     } else {
       registerdto.score = 0;
       registerdto.matches = 0;
+      registerdto.matches_won = 0;
       const user = await this.userService.create(registerdto);
       const payload = {
         username: user.data?.username,

@@ -31,10 +31,10 @@ const Container = ({ content, type = "small", className }: ContainerProps) => {
     );
   } else if (type === "small") {
     return (
-      <div className={"h-auto p-2 grid grid-cols-12 gap-4 "}>
+      <div className={"h-[calc(100vh-80px)] p-2 grid grid-cols-12 gap-4 "}>
         <div
           className={
-            "relative my-10 pb-20 border border-slate-200 rounded-2xl shadow-2xl shadow-blue-500/50  box-border  col-start-0 col-span-12 md:col-start-4 md:col-span-6 lg:col-start-5 lg:col-span-4"
+            "bg-opacity-75  bg-white relative my-10 pb-20 border border-slate-200 rounded-2xl shadow-2xl shadow-blue-500/50  box-border  col-start-0 col-span-12 md:col-start-4 md:col-span-6 lg:col-start-5 lg:col-span-4"
           }
         >
           {content}

@@ -60,8 +60,8 @@ export class UserController {
   }
 
   @Authorized()
-  @Get("myself")
-  async getMyself(@CurrentUser() user: IUser) {
+  @Get("/auth/myself")
+  async getMyself(@CurrentUser() user: any) {
     return user;
   }
 }

@@ -16,6 +16,7 @@ export const initialUser: StoreUser = {
   username: "",
   score: 0,
   matches: 0,
+  matches_won: 0,
   password: "",
 };
 

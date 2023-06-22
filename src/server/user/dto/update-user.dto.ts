@@ -18,4 +18,7 @@ export class UpdateUserDto {
 
   @Min(0)
   matches: number | undefined;
+
+  @Min(0)
+  matches_won: number | undefined;
 }

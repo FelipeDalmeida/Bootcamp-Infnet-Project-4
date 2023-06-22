@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useGlobalStore } from "../useGlobalStore";
+import { initialUser, useGlobalStore } from "../useGlobalStore";
 import { browserHistory } from "../browserHistory";
 import { AuthToken } from "../authToken";
 import { Toast } from "../../components/Toast";
