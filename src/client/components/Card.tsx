@@ -3,7 +3,7 @@ import Text from "./Text";
 interface CardProps {
   title: string | number;
   content?: string | number | ReactElement;
-  botton?: string | number;
+  botton?: string;
 }
 
 const Card = ({ title, content, botton }: CardProps) => {

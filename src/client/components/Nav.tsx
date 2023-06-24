@@ -31,7 +31,7 @@ const Nav = ({ className, anchor, anchor2 }: NaVProps) => {
           </span>
           <div
             className={
-              "hidden md:flex justify-around md:w-2/4 lg:w-1/3 xl:w-1/4 [&>a]:text-orange-500  [&>a]:cursor-pointer text-lg"
+              "hidden md:flex justify-around md:w-3/4 lg:w-2/3 xl:w-2/4 [&>a]:text-orange-500  [&>a]:cursor-pointer text-lg"
             }
           >
             {anchor}

@@ -7,12 +7,13 @@ import { connect } from "mongoose";
 import { AuthController } from "./auth/auth.controller";
 import { authorizationChecker } from "./auth/authorization.checker";
 import { currentUserChecker } from "./auth/currentuser.checker";
+import { CardsController } from "./cards/cards.controller";
 dotenv.config();
 
 useContainer(Container);
 
 createExpressServer({
-  controllers: [UserController, AuthController],
+  controllers: [UserController, AuthController, CardsController],
   cors: true,
   authorizationChecker,
   currentUserChecker,

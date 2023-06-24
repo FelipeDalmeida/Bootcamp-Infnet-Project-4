@@ -41,6 +41,7 @@ const Login = () => {
     if (response.data.user.success) {
       AuthToken.set(response.data.token);
       setUser({ ...response.data.user.data, isAuthenticated: true });
+      goToPage("/usuario");
     }
   };
 

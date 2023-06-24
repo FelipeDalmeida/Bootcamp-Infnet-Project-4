@@ -94,17 +94,17 @@ const User = ({}) => {
             <Card
               title={text.labelMatches}
               content={"🎺"}
-              botton={userData.matches}
+              botton={`${userData.matches}`}
             />
             <Card
               title={text.labelMatchesWon}
               content={"😎"}
-              botton={userData.matches_won}
+              botton={`${userData.matches_won}`}
             />
             <Card
               title={text.labelScore}
               content={"🏆"}
-              botton={userData.score}
+              botton={`${userData.score}`}
             />
           </div>
         </>

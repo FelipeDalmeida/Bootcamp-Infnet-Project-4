@@ -9,6 +9,7 @@ const text = {
   logout: "Logout",
   play: "Jogar",
   highscore: "Highscore",
+  cards: "Cartas",
   myself: "Minha conta",
 };
 
@@ -35,6 +36,9 @@ const Header = () => {
           <Link to="/" className={" text-2xl hover:text-orange-700"}>
             {text.highscore}
           </Link>,
+          <Link to="/cartas" className={" text-2xl hover:text-orange-700"}>
+            {text.cards}
+          </Link>,
           <Link to="/usuario" className={" text-2xl hover:text-orange-700"}>
             {text.myself}
           </Link>,
@@ -54,7 +58,7 @@ const Header = () => {
       <Button
         className={"mt-6 md:mt-1"}
         title={text.register}
-        onClick={() => goToPage("/register")}
+        onClick={() => goToPage("/registro")}
       />
     ),
   ];
