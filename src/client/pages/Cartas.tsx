@@ -4,6 +4,7 @@ import Container from "../components/Container";
 import Text from "../components/Text";
 import { api } from "../service/api/api";
 import Carta from "../components/Carta";
+import Modal from "../components/Modal";
 
 const text = {
   labelTitle: "Cartas",

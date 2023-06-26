@@ -1,14 +1,8 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import Text from "./Text";
 import { ICards } from "../../server/cards/cards.model";
-
-const text = {
-  labelFofura: "Fofura",
-  labelLifeSpan: "Life Span",
-  labelFome: "Fome",
-  labelBrincalhao: "Brincalão",
-  labelBeleza: "Beleza",
-};
+import Modal from "./Modal";
+import CartaContent from "./Carta.content";
 
 const Carta = ({
   name,
@@ -19,54 +13,43 @@ const Carta = ({
   brincalhao,
   beleza,
 }: ICards) => {
+  const [open, setOpen] = useState(false);
   return (
-    <div className={"m-5 bg-orange-500 border border-orange-700 rounded-xl"}>
-      <div
-        className={
-          "w-full text-xl bg-opacity-75 text-center bg-white border border-orange-700 rounded-t-xl"
+    <>
+      <Modal
+        open={open}
+        setOpen={setOpen}
+        content={
+          <div
+            className={"m-5 bg-orange-500 border border-orange-700 rounded-xl"}
+          >
+            <CartaContent
+              name={name}
+              image={image}
+              fofura={fofura}
+              life_span={life_span}
+              fome={fome}
+              brincalhao={brincalhao}
+              beleza={beleza}
+            />
+          </div>
         }
+      />
+      <div
+        className={"m-5 bg-orange-500 border border-orange-700 rounded-xl"}
+        onClick={() => setOpen(!open)}
       >
-        {name}
+        <CartaContent
+          name={name}
+          image={image}
+          fofura={fofura}
+          life_span={life_span}
+          fome={fome}
+          brincalhao={brincalhao}
+          beleza={beleza}
+        />
       </div>
-      <img className={"w-full"} src={image} />
-      <div className={"mx-8 grid my-2 grid-cols-1"}>
-        <div
-          className={"flex justify-between hover:bg-orange-700 rounded-xl p-1"}
-          onClick={() => console.log("Clicou")}
-        >
-          <Text className={" text-xl"} text={text.labelFofura} />
-          <Text className={" text-xl"} text={`${fofura}`} />
-        </div>
-        <div
-          className={"flex justify-between hover:bg-orange-700 rounded-xl p-1"}
-          onClick={() => console.log("Clicou")}
-        >
-          <Text className={" text-xl"} text={text.labelLifeSpan} />
-          <Text className={" text-xl"} text={`${life_span}`} />
-        </div>
-        <div
-          className={"flex justify-between hover:bg-orange-700 rounded-xl p-1"}
-          onClick={() => console.log("Clicou")}
-        >
-          <Text className={" text-xl"} text={text.labelFome} />
-          <Text className={" text-xl"} text={`${fome}`} />
-        </div>
-        <div
-          className={"flex justify-between hover:bg-orange-700 rounded-xl p-1"}
-          onClick={() => console.log("Clicou")}
-        >
-          <Text className={" text-xl"} text={text.labelBrincalhao} />
-          <Text className={" text-xl"} text={`${brincalhao}`} />
-        </div>
-        <div
-          className={"flex justify-between hover:bg-orange-700 rounded-xl p-1"}
-          onClick={() => console.log("Clicou")}
-        >
-          <Text className={" text-xl"} text={text.labelBeleza} />
-          <Text className={" text-xl"} text={`${beleza}`} />
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

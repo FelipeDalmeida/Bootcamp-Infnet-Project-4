@@ -1,9 +1,8 @@
 import { ReactElement } from "react";
-import Text from "./Text";
 interface CardProps {
   title: string | number;
   content?: string | number | ReactElement;
-  botton?: string;
+  botton?: string | ReactElement;
 }
 
 const Card = ({ title, content, botton }: CardProps) => {
@@ -21,7 +20,7 @@ const Card = ({ title, content, botton }: CardProps) => {
         {title}
       </span>
       <span className={"my-2 text-6xl"}>{content}</span>
-      <Text className={"my-2 text-4xl"} text={botton} />
+      <span className={"my-2 text-4xl"}>{botton}</span>
     </div>
   );
 };

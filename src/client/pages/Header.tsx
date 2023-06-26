@@ -27,26 +27,25 @@ const Header = () => {
     goToPage("/login");
   };
 
-  const anchor =
-    user.isAuthenticated && AuthToken.get()
-      ? [
-          <Link to="/" className={" text-2xl hover:text-orange-700"}>
-            {text.play}
-          </Link>,
-          <Link to="/" className={" text-2xl hover:text-orange-700"}>
-            {text.highscore}
-          </Link>,
-          <Link to="/cartas" className={" text-2xl hover:text-orange-700"}>
-            {text.cards}
-          </Link>,
-          <Link to="/usuario" className={" text-2xl hover:text-orange-700"}>
-            {text.myself}
-          </Link>,
-        ]
-      : "";
+  const anchor = AuthToken.get()
+    ? [
+        <Link to="/game" className={" text-2xl hover:text-orange-700"}>
+          {text.play}
+        </Link>,
+        <Link to="/" className={" text-2xl hover:text-orange-700"}>
+          {text.highscore}
+        </Link>,
+        <Link to="/cartas" className={" text-2xl hover:text-orange-700"}>
+          {text.cards}
+        </Link>,
+        <Link to="/usuario" className={" text-2xl hover:text-orange-700"}>
+          {text.myself}
+        </Link>,
+      ]
+    : "";
 
   const anchor2 = [
-    user.isAuthenticated ? (
+    AuthToken.get() ? (
       <Button
         className={"mt-6 md:mt-1"}
         title={text.logout}

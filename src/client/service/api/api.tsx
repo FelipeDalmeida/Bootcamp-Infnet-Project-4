@@ -35,6 +35,7 @@ api.interceptors.response.use(
     if (status === 401) {
       AuthToken.remove();
       toast(<Toast message={texts.unauthenticatedError} />);
+      console.log(texts.unauthenticatedError);
       browserHistory.push("/");
     } else if (status === 400) {
       const data = error.response.data;

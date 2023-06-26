@@ -14,6 +14,7 @@ function App() {
   const Register = lazy(() => import("./pages/auth/Registro"));
   const User = lazy(() => import("./pages/User"));
   const Cards = lazy(() => import("./pages/Cartas"));
+  const Game = lazy(() => import("./pages/Game"));
   return (
     <Router history={browserHistory}>
       <Suspense fallback={"<Load />"}>
@@ -28,8 +29,8 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/usuario" element={<User />} />
           <Route path="/cartas" element={<Cards />} />
-          {/* <Route path="/cadastro" element={<CadastraPaciente />} />
-        <Route path="/pacientes" element={<ListaPacientes />} />
+          <Route path="/game" element={<Game />} />
+          {/* <Route path="/pacientes" element={<ListaPacientes />} />
         <Route path="/pacientes/:id" element={<PacientePage />} />
         <Route path="/cadastrocompcorp/:id" element={<CadastraAvCompCorp />} />
         <Route path="/compcorp/:id" element={<AvCompCorp />} />

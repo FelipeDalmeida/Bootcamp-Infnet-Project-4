@@ -6,6 +6,7 @@ import type { IUser } from "../../server/user/user.model";
 import { api } from "../service/api/api";
 import Card from "../components/Card";
 import Button from "../components/Button";
+import { useGlobalStore } from "../service/useGlobalStore";
 
 const text = {
   labelTitle: "Player",
@@ -19,6 +20,7 @@ const text = {
 };
 
 const User = ({}) => {
+  const user = useGlobalStore((state) => state.user);
   const [userData, setUserData] = useState<IUser>({
     username: "",
     password: "",
@@ -36,6 +38,7 @@ const User = ({}) => {
 
   useEffect(() => {
     carregaUser();
+    console.log(user);
   }, []);
   return (
     <Container
@@ -85,7 +88,7 @@ const User = ({}) => {
               title={text.labelPlay}
               content={
                 <Button
-                  className={"!text-black p-3"}
+                  className={"!text-black p-3 !w-24"}
                   title={"🎾"}
                   onClick={() => {}}
                 />
