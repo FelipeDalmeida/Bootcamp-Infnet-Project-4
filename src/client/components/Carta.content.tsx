@@ -36,7 +36,7 @@ const CartaContent = ({
       >
         {name}
       </div>
-      <img className={"w-full"} src={image} />
+      <img className={"w-full h-[calc(200px)]"} src={image} />
       <div className={"mx-8 grid my-2 grid-cols-1"}>
         <CardLine
           row1={text.labelFofura}

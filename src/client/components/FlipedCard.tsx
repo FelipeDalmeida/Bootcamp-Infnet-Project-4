@@ -9,7 +9,7 @@ interface FlipedCardInterface {
 
 const FlipedCard = ({ src, content, flip }: FlipedCardInterface) => {
   return (
-    <div className={`m-5 w-52 h-[calc(430px)] ${flip ? "cardflip2" : ""}`}>
+    <div className={`sm:m-5 w-52 h-[calc(430px)] ${flip ? "cardflip2" : ""}`}>
       <div
         className={`flip-card-inner  rounded-xl bg-orange-500 border border-orange-700 ${
           flip ? "cardflip" : ""

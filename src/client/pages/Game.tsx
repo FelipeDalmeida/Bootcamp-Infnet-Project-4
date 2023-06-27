@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ICards } from "../../server/cards/cards.model";
 import Button from "../components/Button";
 import Card from "../components/Card";
@@ -7,6 +7,7 @@ import Carta from "../components/Carta";
 import CartaContent from "../components/Carta.content";
 import Logo from "../assets/img/logo.png";
 import FlipedCard from "../components/FlipedCard";
+import { api } from "../service/api/api";
 
 const text = {
   labelMyCards: "Minhas cartas",
@@ -26,6 +27,9 @@ export const initialCard = {
 
 const Game = ({}) => {
   const [card, setCard] = useState<ICards>(initialCard);
+  const [cardPC, setCardPC] = useState<ICards>(initialCard);
+  const [countCard, setCountCard] = useState(0);
+  const [countCardPC, setCountCardPC] = useState(0);
   const [flip, setFlip] = useState(false);
   // const carregaCards = async () => {
   //   const response = await api.get("/cards");
@@ -36,6 +40,18 @@ const Game = ({}) => {
   //   setCards(cartas);
   // };
 
+  const initMatch = async () => {
+    const response = await api.post("play/init");
+    setCard(response.data.cardUser);
+    setCardPC(response.data.cardPC);
+    setCountCard(response.data.countCardsUser);
+    setCountCardPC(response.data.countCardsPC);
+    console.log(response);
+  };
+  useEffect(() => {
+    initMatch();
+  }, []);
+
   return (
     <>
       <Container
@@ -44,7 +60,7 @@ const Game = ({}) => {
           <>
             {/* ///////////////////////////////////////////Oponente //////////////////////////////*/}
             <div className={"hidden sm:block  absolute top-0 left-0"}>
-              <Card title={text.labelOponentCards} content={0} />
+              <Card title={text.labelOponentCards} content={countCardPC} />
             </div>
             <div
               className={
@@ -58,7 +74,7 @@ const Game = ({}) => {
               >
                 {text.labelOponentCards}
               </span>
-              <span className={"my-2 text-xl self-center"}>{0}</span>
+              <span className={"my-2 text-xl self-center"}>{countCardPC}</span>
             </div>
             {/* ///////////////////////////////////////////Cards //////////////////////////////*/}
             <div className={"h-full w-full flex justify-center items-center"}>
@@ -71,13 +87,13 @@ const Game = ({}) => {
                 src={Logo}
                 content={
                   <CartaContent
-                    name={card.name}
-                    image={card.image}
-                    fofura={card.fofura}
-                    life_span={card.life_span}
-                    fome={card.fome}
-                    brincalhao={card.brincalhao}
-                    beleza={card.beleza}
+                    name={cardPC.name}
+                    image={cardPC.image}
+                    fofura={cardPC.fofura}
+                    life_span={cardPC.life_span}
+                    fome={cardPC.fome}
+                    brincalhao={cardPC.brincalhao}
+                    beleza={cardPC.beleza}
                     lineDisabled={true}
                   />
                 }
@@ -87,7 +103,7 @@ const Game = ({}) => {
               {/* </div> */}
               <div
                 className={
-                  "m-5 bg-orange-500 border border-orange-700  rounded-xl w-52 h-[calc(430px)] "
+                  "sm:m-5 bg-orange-500 border border-orange-700  rounded-xl w-52 h-[calc(430px)] "
                 }
               >
                 <CartaContent
@@ -121,7 +137,7 @@ const Game = ({}) => {
             <div className={"hidden sm:block  absolute bottom-0 right-0"}>
               <Card
                 title={text.labelMyCards}
-                content={0}
+                content={countCard}
                 botton={
                   <Button
                     title={text.labelButtonNext}
@@ -142,8 +158,12 @@ const Game = ({}) => {
               >
                 {text.labelMyCards}
               </span>
-              <span className={"my-2 text-xl self-center"}>{0}</span>
-              <Button title={text.labelButtonNext} className={"!m-0 !w-full"} />
+              <span className={"my-2 text-xl self-center"}>{countCard}</span>
+              <Button
+                title={text.labelButtonNext}
+                className={"!m-0 !w-full"}
+                onClick={() => setFlip(!flip)}
+              />
             </div>
           </>
         }

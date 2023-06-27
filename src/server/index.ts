@@ -8,12 +8,18 @@ import { AuthController } from "./auth/auth.controller";
 import { authorizationChecker } from "./auth/authorization.checker";
 import { currentUserChecker } from "./auth/currentuser.checker";
 import { CardsController } from "./cards/cards.controller";
+import { PlayController } from "./play/play.controller";
 dotenv.config();
 
 useContainer(Container);
 
 createExpressServer({
-  controllers: [UserController, AuthController, CardsController],
+  controllers: [
+    UserController,
+    AuthController,
+    CardsController,
+    PlayController,
+  ],
   cors: true,
   authorizationChecker,
   currentUserChecker,
