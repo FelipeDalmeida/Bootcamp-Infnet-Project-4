@@ -8,6 +8,7 @@ import {
   Body,
   Authorized,
   CurrentUser,
+  Patch,
 } from "routing-controllers";
 
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -43,7 +44,7 @@ export class UserController {
   }
 
   @Authorized()
-  @Put("/:username")
+  @Patch("/:username")
   async update(
     @Param("username") username: string,
     @Body() updateuserdto: UpdateUserDto

@@ -14,6 +14,19 @@ export class PlayRepository {
     return match;
   }
 
+  async delete(username: string) {
+    const match = await Play.findOneAndDelete({ username }).lean();
+    return match;
+  }
+
+  async update(username: string, updateuserdto: IPlay) {
+    const match = await Play.findOneAndUpdate(
+      { username },
+      updateuserdto
+    ).lean();
+    return match;
+  }
+
   //   async findOne(name: string) {
   //     const card = await Cards.findOne({ name }).lean();
   //     return card;

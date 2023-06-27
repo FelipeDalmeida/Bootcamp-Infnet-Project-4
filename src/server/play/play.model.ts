@@ -7,6 +7,7 @@ export interface IPlay {
   cardsUser: ICards[];
   cardsPC: ICards[];
   playerTurn: boolean;
+  turns: number;
 }
 
 export const playSchema = new Schema<IPlay>({
@@ -16,15 +17,22 @@ export const playSchema = new Schema<IPlay>({
   },
   cardsUser: {
     type: Schema.Types.Mixed,
+    required: true,
     ref: "Card",
   },
   cardsPC: {
     type: Schema.Types.Mixed,
     ref: "Card",
+    required: true,
   },
   playerTurn: {
     type: Schema.Types.Boolean,
     default: true,
+  },
+  turns: {
+    type: Schema.Types.Number,
+    default: 0,
+    required: true,
   },
 });
 
