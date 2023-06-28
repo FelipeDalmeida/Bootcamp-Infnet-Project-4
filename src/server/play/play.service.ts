@@ -75,17 +75,16 @@ export class PlayService {
     });
     if (updated_match) {
       return {
-        username: updated_match.username,
-        cardUser: updated_match.cardsUser[0],
-        cardPC: updated_match.cardsPC[0],
-        countCardsUser: updated_match.cardsUser.length,
-        countCardsPC: updated_match.cardsPC.length,
-        playerTurn: updated_match.playerTurn,
-        turns: updated_match.turns,
+        username: username,
+        cardUser: cardsUser[0],
+        cardPC: cardsPC[0],
+        countCardsUser: cardsUser.length,
+        countCardsPC: cardsPC.length,
+        playerTurn: playerTurn,
+        turns: turn,
         isOver: false,
       };
     }
-    return "oba";
   };
 
   private playerWonTurn = async (
@@ -108,11 +107,12 @@ export class PlayService {
         matches_won: user.matches_won + 1,
       });
       const deleted_match = await this.playRepository.delete(username);
-
-      return {
-        ...deleted_match,
-        isOver: true,
-      };
+      if (deleted_match) {
+        return {
+          // ...deleted_match,
+          isOver: true,
+        };
+      }
     } else {
       this.arrumaBaralho(cardsUser, cardsPC, cardUser, cardPC);
       return await this.updateMatch(
@@ -123,27 +123,6 @@ export class PlayService {
         turn,
         true
       );
-      // console.log("responseinside", response);
-      // return response;
-      // const updated_match = await this.playRepository.update(username, {
-      //   ...match,
-      //   cardsPC: cardsPC,
-      //   cardsUser: cardsUser,
-      //   turns: turn,
-      //   playerTurn: true,
-      // });
-      // if (updated_match) {
-      //   return {
-      //     username: updated_match.username,
-      //     cardUser: updated_match.cardsUser[0],
-      //     cardPC: updated_match.cardsPC[0],
-      //     countCardsUser: updated_match.cardsUser.length,
-      //     countCardsPC: updated_match.cardsPC.length,
-      //     playerTurn: updated_match.playerTurn,
-      //     turns: updated_match.turns,
-      //     isOver: false,
-      //   };
-      // }
     }
   };
 
@@ -160,10 +139,12 @@ export class PlayService {
       /// computador ganhou
 
       const deleted_match = await this.playRepository.delete(username);
-      return {
-        ...deleted_match,
-        isOver: true,
-      };
+      if (deleted_match) {
+        return {
+          // ...deleted_match,
+          isOver: true,
+        };
+      }
     } else {
       //Computador ganhou a carta
       this.arrumaBaralho(cardsPC, cardsUser, cardPC, cardUser);
@@ -175,30 +156,10 @@ export class PlayService {
         turn,
         false
       );
-      // const updated_match = await this.playRepository.update(username, {
-      //   ...match,
-      //   cardsPC: cardsPC,
-      //   cardsUser: cardsUser,
-      //   turns: turn,
-      //   playerTurn: false,
-      // });
-
-      // if (updated_match) {
-      //   return {
-      //     username: updated_match.username,
-      //     cardUser: updated_match.cardsUser[0],
-      //     cardPC: updated_match.cardsPC[0],
-      //     countCardsUser: updated_match.cardsUser.length,
-      //     countCardsPC: updated_match.cardsPC.length,
-      //     playerTurn: updated_match.playerTurn,
-      //     turns: updated_match.turns,
-      //     isOver: false,
-      //   };
-      // }
     }
   };
 
-  async jogada(user: IUser, atributo: { value: string }) {
+  async jogada(user: IUser, atributo?: { value: keyof ICards }) {
     const username = user.username;
     const match = await this.playRepository.findMatch(username);
     if (match) {
@@ -207,10 +168,9 @@ export class PlayService {
       const cardsPC = match.cardsPC;
       const cardsUser = match.cardsUser;
       const turn = match.turns + 1;
+      const keys = Object.keys(cardUser);
+      type KeyCards = keyof ICards;
       if (match.playerTurn && atributo) {
-        type KeyCards = keyof ICards;
-        const keys = Object.keys(cardUser);
-
         for (const key of keys) {
           if (key == atributo.value) {
             if (cardUser[key as KeyCards] >= cardPC[key as KeyCards]) {
@@ -238,34 +198,51 @@ export class PlayService {
             }
           }
         }
-        // Object.keys(cardUser).map(async (key) => {
-        //   if (key == atributo.value) {
-        //     if (cardUser[key as KeyCards] >= cardPC[key as KeyCards]) {
-        //       response = await this.playerWonTurn(
-        //         username,
-        //         turn,
-        //         user,
-        //         cardsPC,
-        //         cardsUser,
-        //         cardPC,
-        //         cardUser,
-        //         match
-        //       );
-        //     } else {
-        //       //Computador ganhou o turno
-        //       response = await this.computerWonTurn(
-        //         username,
-        //         turn,
-        //         cardsPC,
-        //         cardsUser,
-        //         cardPC,
-        //         cardUser,
-        //         match
-        //       );
-        //     }
-        //   }
-        // });
       } else if (!match.playerTurn) {
+        let atributo_pc: KeyCards = "life_span";
+        let maior_atributo = 0;
+        if (atributo_pc) {
+          if (cardPC.life_span < 19) {
+            //life_span >18 ganha do super trunfo e da maioria
+            for (const key of keys) {
+              if (Number(cardPC[key as KeyCards]) > maior_atributo) {
+                maior_atributo = Number(cardPC[key as KeyCards]);
+                atributo_pc = key as KeyCards;
+              }
+            }
+          }
+          if (cardUser[atributo_pc] >= cardPC[atributo_pc]) {
+            const response = await this.playerWonTurn(
+              username,
+              turn,
+              user,
+              cardsPC,
+              cardsUser,
+              cardPC,
+              cardUser,
+              match
+            );
+            return {
+              ...response,
+              atributo_pc: atributo_pc,
+            };
+          } else {
+            //Computador ganhou o turno
+            const response = await this.computerWonTurn(
+              username,
+              turn,
+              cardsPC,
+              cardsUser,
+              cardPC,
+              cardUser,
+              match
+            );
+            return {
+              ...response,
+              atributo_pc: atributo_pc,
+            };
+          }
+        }
       }
     }
     return false;

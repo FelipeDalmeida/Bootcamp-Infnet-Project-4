@@ -19,10 +19,10 @@ export class PlayRepository {
     return match;
   }
 
-  async update(username: string, updateuserdto: IPlay) {
+  async update(username: string, updateplaydto: IPlay) {
     const match = await Play.findOneAndUpdate(
       { username },
-      updateuserdto
+      updateplaydto
     ).lean();
     return match;
   }

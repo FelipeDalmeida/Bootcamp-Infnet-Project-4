@@ -30,7 +30,7 @@ export class PlayController {
   @Post("/play")
   async jogada(
     @CurrentUser() user: IUser,
-    @Body() atributo: { value: string }
+    @Body() atributo?: { value: keyof ICards }
   ) {
     const turn = await this.playService.jogada(user, atributo);
     return turn;
