@@ -46,72 +46,229 @@ export class PlayService {
     }
   }
 
+  private arrumaBaralho(
+    vencedor: ICards[],
+    perdedor: ICards[],
+    cartaVencedor: ICards,
+    cartaPerdedor: ICards
+  ) {
+    perdedor.shift();
+    vencedor.push(cartaPerdedor);
+    vencedor.shift();
+    vencedor.push(cartaVencedor);
+  }
+
+  private updateMatch = async (
+    username: string,
+    match: IPlay,
+    cardsPC: ICards[],
+    cardsUser: ICards[],
+    turn: number,
+    playerTurn: boolean
+  ) => {
+    const updated_match = await this.playRepository.update(username, {
+      ...match,
+      cardsPC: cardsPC,
+      cardsUser: cardsUser,
+      turns: turn,
+      playerTurn: playerTurn,
+    });
+    if (updated_match) {
+      return {
+        username: updated_match.username,
+        cardUser: updated_match.cardsUser[0],
+        cardPC: updated_match.cardsPC[0],
+        countCardsUser: updated_match.cardsUser.length,
+        countCardsPC: updated_match.cardsPC.length,
+        playerTurn: updated_match.playerTurn,
+        turns: updated_match.turns,
+        isOver: false,
+      };
+    }
+    return "oba";
+  };
+
+  private playerWonTurn = async (
+    username: string,
+    turn: number,
+    user: IUser,
+    cardsPC: ICards[],
+    cardsUser: ICards[],
+    cardPC: ICards,
+    cardUser: ICards,
+    match: IPlay
+  ) => {
+    if (cardsPC.length === 1) {
+      //Como o player ganhou, o PC perdeu sua ultima carta
+      /// player ganhou
+      const matchScore = this.turnsScore(turn);
+      await this.userService.update(username, {
+        ...user,
+        score: user.score + matchScore,
+        matches_won: user.matches_won + 1,
+      });
+      const deleted_match = await this.playRepository.delete(username);
+
+      return {
+        ...deleted_match,
+        isOver: true,
+      };
+    } else {
+      this.arrumaBaralho(cardsUser, cardsPC, cardUser, cardPC);
+      return await this.updateMatch(
+        username,
+        match,
+        cardsPC,
+        cardsUser,
+        turn,
+        true
+      );
+      // console.log("responseinside", response);
+      // return response;
+      // const updated_match = await this.playRepository.update(username, {
+      //   ...match,
+      //   cardsPC: cardsPC,
+      //   cardsUser: cardsUser,
+      //   turns: turn,
+      //   playerTurn: true,
+      // });
+      // if (updated_match) {
+      //   return {
+      //     username: updated_match.username,
+      //     cardUser: updated_match.cardsUser[0],
+      //     cardPC: updated_match.cardsPC[0],
+      //     countCardsUser: updated_match.cardsUser.length,
+      //     countCardsPC: updated_match.cardsPC.length,
+      //     playerTurn: updated_match.playerTurn,
+      //     turns: updated_match.turns,
+      //     isOver: false,
+      //   };
+      // }
+    }
+  };
+
+  private computerWonTurn = async (
+    username: string,
+    turn: number,
+    cardsPC: ICards[],
+    cardsUser: ICards[],
+    cardPC: ICards,
+    cardUser: ICards,
+    match: IPlay
+  ) => {
+    if (cardsUser.length === 1) {
+      /// computador ganhou
+
+      const deleted_match = await this.playRepository.delete(username);
+      return {
+        ...deleted_match,
+        isOver: true,
+      };
+    } else {
+      //Computador ganhou a carta
+      this.arrumaBaralho(cardsPC, cardsUser, cardPC, cardUser);
+      return await this.updateMatch(
+        username,
+        match,
+        cardsPC,
+        cardsUser,
+        turn,
+        false
+      );
+      // const updated_match = await this.playRepository.update(username, {
+      //   ...match,
+      //   cardsPC: cardsPC,
+      //   cardsUser: cardsUser,
+      //   turns: turn,
+      //   playerTurn: false,
+      // });
+
+      // if (updated_match) {
+      //   return {
+      //     username: updated_match.username,
+      //     cardUser: updated_match.cardsUser[0],
+      //     cardPC: updated_match.cardsPC[0],
+      //     countCardsUser: updated_match.cardsUser.length,
+      //     countCardsPC: updated_match.cardsPC.length,
+      //     playerTurn: updated_match.playerTurn,
+      //     turns: updated_match.turns,
+      //     isOver: false,
+      //   };
+      // }
+    }
+  };
+
   async jogada(user: IUser, atributo: { value: string }) {
     const username = user.username;
-    let response;
     const match = await this.playRepository.findMatch(username);
     if (match) {
-      console.log("atributo", atributo);
       const cardPC = match.cardsPC[0];
       const cardUser = match.cardsUser[0];
       const cardsPC = match.cardsPC;
       const cardsUser = match.cardsUser;
       const turn = match.turns + 1;
       if (match.playerTurn && atributo) {
-        console.log("entrou");
         type KeyCards = keyof ICards;
-        response = Object.keys(cardUser).map(async (key) => {
-          if (key == atributo.value) {
-            console.log("entrou2", key);
-            if (cardUser[key as KeyCards] >= cardPC[key as KeyCards]) {
-              if (cardsPC.length === 0) {
-                /// player ganhou
-                const matchScore = this.turnsScore(turn);
-                await this.userService.update(username, {
-                  ...user,
-                  score: user.score + matchScore,
-                });
-                const deleted_match = await this.playRepository.delete(
-                  username
-                );
+        const keys = Object.keys(cardUser);
 
-                return {
-                  ...deleted_match,
-                  isOver: true,
-                };
-              } else {
-                //Player ganhou a carta
-                cardsPC.shift();
-                cardsUser.push(cardPC);
-                cardsUser.shift();
-                cardsUser.push(cardUser);
-                const updated_match = await this.playRepository.update(
-                  username,
-                  {
-                    ...match,
-                    cardsPC: cardsPC,
-                    cardsUser: cardsUser,
-                    turns: turn,
-                  }
-                );
-                if (updated_match) {
-                  return {
-                    username: updated_match.username,
-                    cardUser: updated_match.cardsUser[0],
-                    cardPC: updated_match.cardsPC[0],
-                    countCardsUser: updated_match.cardsUser.length,
-                    countCardsPC: updated_match.cardsPC.length,
-                    playerTurn: updated_match.playerTurn,
-                    turns: updated_match.turns,
-                  };
-                }
-              }
+        for (const key of keys) {
+          if (key == atributo.value) {
+            if (cardUser[key as KeyCards] >= cardPC[key as KeyCards]) {
+              return await this.playerWonTurn(
+                username,
+                turn,
+                user,
+                cardsPC,
+                cardsUser,
+                cardPC,
+                cardUser,
+                match
+              );
+            } else {
+              //Computador ganhou o turno
+              return await this.computerWonTurn(
+                username,
+                turn,
+                cardsPC,
+                cardsUser,
+                cardPC,
+                cardUser,
+                match
+              );
             }
           }
-        });
+        }
+        // Object.keys(cardUser).map(async (key) => {
+        //   if (key == atributo.value) {
+        //     if (cardUser[key as KeyCards] >= cardPC[key as KeyCards]) {
+        //       response = await this.playerWonTurn(
+        //         username,
+        //         turn,
+        //         user,
+        //         cardsPC,
+        //         cardsUser,
+        //         cardPC,
+        //         cardUser,
+        //         match
+        //       );
+        //     } else {
+        //       //Computador ganhou o turno
+        //       response = await this.computerWonTurn(
+        //         username,
+        //         turn,
+        //         cardsPC,
+        //         cardsUser,
+        //         cardPC,
+        //         cardUser,
+        //         match
+        //       );
+        //     }
+        //   }
+        // });
+      } else if (!match.playerTurn) {
       }
     }
-    return response;
+    return false;
   }
 
   async initMatch(user: IUser) {
