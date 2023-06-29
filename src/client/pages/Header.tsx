@@ -9,7 +9,7 @@ const text = {
   logout: "Logout",
   play: "Jogar",
   highscore: "Highscore",
-  cards: "Cartas",
+  cards: "Cartas e Regras",
   myself: "Minha conta",
 };
 
@@ -29,9 +29,9 @@ const Header = () => {
 
   const anchor = AuthToken.get()
     ? [
-        <Link to="/game" className={" text-2xl hover:text-orange-700"}>
-          {text.play}
-        </Link>,
+        // <Link to="/game" className={" text-2xl hover:text-orange-700"}>
+        //   {text.play}
+        // </Link>,
         <Link to="/" className={" text-2xl hover:text-orange-700"}>
           {text.highscore}
         </Link>,

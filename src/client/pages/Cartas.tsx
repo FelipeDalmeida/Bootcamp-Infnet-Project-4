@@ -42,7 +42,11 @@ const Cartas = ({}) => {
             text={text.labelTitle}
           />
 
-          <div className={"mx-8 grid my-2 grid-cols-1"}>
+          <div
+            className={
+              "mx-8 grid my-2 grid-cols-1 justify-items-center xxl:grid-cols-2"
+            }
+          >
             {cards.map((card) => {
               return (
                 <Carta

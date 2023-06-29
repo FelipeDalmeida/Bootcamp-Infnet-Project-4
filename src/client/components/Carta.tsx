@@ -20,23 +20,29 @@ const Carta = ({
         open={open}
         setOpen={setOpen}
         content={
-          <div
-            className={"m-5 bg-orange-500 border border-orange-700 rounded-xl"}
-          >
-            <CartaContent
-              name={name}
-              image={image}
-              fofura={fofura}
-              life_span={life_span}
-              fome={fome}
-              brincalhao={brincalhao}
-              beleza={beleza}
-            />
+          <div className={" flex justify-center"}>
+            <div
+              className={
+                "m-5 bg-orange-500 border border-orange-700 rounded-xl w-52 h-[calc(430px)]"
+              }
+            >
+              <CartaContent
+                name={name}
+                image={image}
+                fofura={fofura}
+                life_span={life_span}
+                fome={fome}
+                brincalhao={brincalhao}
+                beleza={beleza}
+              />
+            </div>
           </div>
         }
       />
       <div
-        className={"m-5 bg-orange-500 border border-orange-700 rounded-xl"}
+        className={
+          "m-5 bg-orange-500 border border-orange-700 rounded-xl w-52 h-[calc(430px)] cursor-pointer"
+        }
         onClick={() => setOpen(!open)}
       >
         <CartaContent

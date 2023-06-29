@@ -111,6 +111,7 @@ export class PlayService {
         return {
           // ...deleted_match,
           isOver: true,
+          isWinner: true,
         };
       }
     } else {
@@ -143,6 +144,7 @@ export class PlayService {
         return {
           // ...deleted_match,
           isOver: true,
+          isWinner: false,
         };
       }
     } else {
@@ -160,6 +162,7 @@ export class PlayService {
   };
 
   async jogada(user: IUser, atributo?: { value: keyof ICards }) {
+    console.log(atributo);
     const username = user.username;
     const match = await this.playRepository.findMatch(username);
     if (match) {

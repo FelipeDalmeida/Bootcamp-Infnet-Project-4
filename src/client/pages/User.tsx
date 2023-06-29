@@ -7,6 +7,7 @@ import { api } from "../service/api/api";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import { useGlobalStore } from "../service/useGlobalStore";
+import { useNavigate } from "react-router-dom";
 
 const text = {
   labelTitle: "Player",
@@ -20,6 +21,10 @@ const text = {
 };
 
 const User = ({}) => {
+  const navigate = useNavigate();
+  const goToPage = (page: string) => {
+    navigate(`${page}`);
+  };
   const user = useGlobalStore((state) => state.user);
   const [userData, setUserData] = useState<IUser>({
     username: "",
@@ -90,7 +95,7 @@ const User = ({}) => {
                 <Button
                   className={"!text-black p-3 !w-24"}
                   title={"🎾"}
-                  onClick={() => {}}
+                  onClick={() => goToPage("/game")}
                 />
               }
             />
