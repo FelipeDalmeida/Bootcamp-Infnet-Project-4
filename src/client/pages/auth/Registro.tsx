@@ -44,13 +44,12 @@ const Register = () => {
         password: registro.password,
         username: registro.username,
       });
-      console.log(response);
       if (response.data.user.success) {
         AuthToken.set(response.data.token);
         setUser({ ...response.data.user.data, isAuthenticated: true });
       }
 
-      goToPage("/");
+      goToPage("/usuario");
     } else {
       setRegistro({ ...registro, senhaError: text.labelBadPassword });
     }

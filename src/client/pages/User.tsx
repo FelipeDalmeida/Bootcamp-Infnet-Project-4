@@ -54,7 +54,6 @@ const User = ({}) => {
       name: userData.name,
       password: userData.password,
     });
-    console.log(response);
     if (response.data.success) {
       toast(<Toast message={text.labelToastAtualizado} />);
     }
@@ -70,13 +69,12 @@ const User = ({}) => {
   };
   const carregaUser = async () => {
     const response = await api.get("/users/auth/myself");
-    console.log("myself", response);
+
     setUserData({ ...response.data });
   };
 
   useEffect(() => {
     carregaUser();
-    console.log(user);
   }, []);
   return (
     <Container

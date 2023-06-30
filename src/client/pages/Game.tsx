@@ -81,7 +81,6 @@ const Game = ({}) => {
       setCardPC(response.data.cardPC);
       toast(<Toast message={text.labelPCTurn} />);
     }
-    console.log("init", response);
   };
 
   const dropMatch = async () => {
@@ -135,7 +134,6 @@ const Game = ({}) => {
         setFlip2(false);
         await delay(1);
         setFlip(true);
-        console.log("atributo", response.data.atributo_pc);
         toast(
           <Toast
             message={`Foi escolhido o atributo ${response.data.atributo_pc}`}

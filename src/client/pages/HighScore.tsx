@@ -7,7 +7,6 @@ const HighScore = ({}) => {
   const [highScores, setHighscores] = useState<IUser[]>([]);
   const loadHoghScore = async () => {
     const response = await api.get("users/highscores");
-    console.log(response);
     if (response.data.success) {
       let highscores: IUser[] = [];
       Object.keys(response.data.data).map((key) => {

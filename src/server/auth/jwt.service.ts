@@ -15,7 +15,6 @@ export class JWTService {
       const payload = JWT.verify(token, secret) as JWT.JwtPayload;
       return payload;
     } catch (error) {
-      console.log(error);
       return null;
     }
   }

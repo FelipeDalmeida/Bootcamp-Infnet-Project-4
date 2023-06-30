@@ -45,11 +45,6 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    //TODO:deletar
-    console.log(user);
-  }, [user]);
-
   return (
     <Container
       type={"auth"}

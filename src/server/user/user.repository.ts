@@ -28,7 +28,6 @@ export class UserRepository {
   }
 
   async update(username: string, updateuserdto: UpdateUserDto) {
-    console.log(updateuserdto);
     const user = await User.findOneAndUpdate({ username }, updateuserdto, {
       new: true,
     }).lean();
