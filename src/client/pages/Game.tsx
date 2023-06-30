@@ -19,9 +19,18 @@ const text = {
   labelWinner: "Você venceu!",
   labelLoser: "Você perdeu!",
   labelPlayerTurn: "Escolha o atributo!",
+  labelPlayerTurnIdentifier: "Sua vez, escolha o atributo!",
+  labelPCTurnIdentifier: "Você perdeu, aperte next!",
   labelPCTurn: "Você perdeu, aperte Next para a próxima rodada",
   labelWinnerTurn: "Você venceu o turno",
+  labelDroped: "Partida excluida",
+  labelDrop: "Drop",
+  labelDesistir: "Desistir",
 };
+
+interface TurnIdentifier {
+  isPlayerTurn: boolean;
+}
 
 export const initialCard = {
   name: "Null",
@@ -48,7 +57,7 @@ const Game = ({}) => {
   const [countCardPC, setCountCardPC] = useState(0);
   const [flip, setFlip] = useState(false);
   const [flip2, setFlip2] = useState(false);
-  const [atributo, setAtributo] = useState<Atributo>({ value: "" });
+  const [userTurn, setUserTurn] = useState(false);
 
   const initMatch = async () => {
     const response = await api.post("play/init");
@@ -57,12 +66,14 @@ const Game = ({}) => {
     setCountCard(response.data.countCardsUser);
     setCountCardPC(response.data.countCardsPC);
     if (response.data.playerTurn) {
+      setUserTurn(true);
       setCard(response.data.cardUser);
       setCardPC(response.data.cardPC);
       await delay(1);
       setFlip2(true);
       toast(<Toast message={text.labelPlayerTurn} />);
     } else {
+      setUserTurn(false);
       setFlip(false);
       setFlip2(false);
       await delay(1);
@@ -73,11 +84,16 @@ const Game = ({}) => {
     console.log("init", response);
   };
 
-  const play = async (e: React.FormEvent<HTMLFormElement>) => {
+  const dropMatch = async () => {
+    await api.post("play/drop");
+    toast(<Toast message={text.labelDroped} />);
+    goToPage("/usuario");
+  };
+
+  const play = async (e: React.FormEvent<HTMLFormElement>, atributo: any) => {
     e.preventDefault();
-    console.log("play");
     const response = await api.post("play/play", {
-      value: atributo.value,
+      value: atributo,
     });
     if (response.data.isOver) {
       if (response.data.isWinner) {
@@ -92,7 +108,12 @@ const Game = ({}) => {
     }
 
     if (response.data.playerTurn) {
+      //se playerTurn for verdadeiro, significa que o player ganhou a rodada atual
+      setUserTurn(true);
       if (!response.data.atributo_pc) {
+        //se não tiver o atributo_pc, player ganhou a ultima rodada e a atual
+        //(Lógica abaixo de como as cartas irão se comportar na situação: cartas são reveladas,
+        //menssagem de vitória, cartas abaixam, são atualizadas com as próximas e é revelada a carta do jogador)
         setFlip(true);
         setFlip2(true);
         toast(<Toast message={text.labelWinnerTurn} />);
@@ -107,9 +128,12 @@ const Game = ({}) => {
         setFlip2(true);
         toast(<Toast message={text.labelPlayerTurn} />);
       } else {
+        //player perdeu a ultima rodada e ganhou a atual
+        //(Lógica: carta do PC é revelada, mostra o atributo escolhido pelo pc, mostra mensagem de vitória
+        //cartas abaixam, são atualizadas com as próximas e é revelada a carta do jogador)
         setFlip(false);
         setFlip2(false);
-        await delay(2);
+        await delay(1);
         setFlip(true);
         console.log("atributo", response.data.atributo_pc);
         toast(
@@ -121,18 +145,23 @@ const Game = ({}) => {
         await delay(2);
         setFlip2(true);
         toast(<Toast message={text.labelWinnerTurn} />);
-        await delay(2);
+        await delay(3);
         setFlip(false);
         setFlip2(false);
         await delay(2);
         setCard(response.data.cardUser);
         setCardPC(response.data.cardPC);
-        await delay(2);
+        await delay(1);
         setFlip2(true);
         toast(<Toast message={text.labelPlayerTurn} />);
       }
     } else {
+      // player perdeu a rodada atual
+      setUserTurn(false);
       if (!response.data.atributo_pc) {
+        //se não tiver o atributo_pc, player ganhou a ultima rodada e perdeu a atual
+        //(Lógica: carta do PC é revelada, mostra mensagem de derrota
+        //cartas abaixam, são atualizadas com as próximas)
         setFlip(true);
 
         await delay(2);
@@ -149,6 +178,9 @@ const Game = ({}) => {
         setFlip2(false);
         toast(<Toast message={text.labelPCTurn} />);
       } else {
+        //player perdeu a ultima rodada e a atual
+        //(Lógica: carta do PC é revelada, mostra o atributo escolhido pelo pc, mostra mensagem de derrota
+        //cartas abaixam, são atualizadas com as próximas )
         setFlip(false);
         setFlip2(false);
         await delay(2);
@@ -161,7 +193,7 @@ const Game = ({}) => {
         await delay(2);
         setFlip2(true);
         toast(<Toast message={text.labelPCTurn} />);
-        await delay(2);
+        await delay(3);
         setFlip(false);
         setFlip2(false);
         await delay(2);
@@ -169,10 +201,14 @@ const Game = ({}) => {
         setCardPC(response.data.cardPC);
       }
     }
-    setAtributo({ value: "" });
     setCountCard(response.data.countCardsUser);
     setCountCardPC(response.data.countCardsPC);
   };
+
+  const alertUserTurn = () => {
+    toast(<Toast message={text.labelPlayerTurn} />);
+  };
+
   useEffect(() => {
     initMatch();
   }, []);
@@ -183,13 +219,14 @@ const Game = ({}) => {
         type={"large"}
         content={
           <>
+            <TurnIdentifier isPlayerTurn={userTurn} />
             {/* ///////////////////////////////////////////Oponente //////////////////////////////*/}
             <div className={"hidden sm:block  absolute top-0 left-0"}>
               <Card title={text.labelOponentCards} content={countCardPC} />
             </div>
             <div
               className={
-                "grid grid-cols-2  gap-4 text-center sm:hidden  absolute top-0 w-full bg-orange-500 border border-orange-700 rounded-xl"
+                "grid grid-cols-3  gap-4 text-center sm:hidden  absolute top-0 w-full bg-orange-500 border border-orange-700 rounded-xl"
               }
             >
               <span
@@ -200,6 +237,11 @@ const Game = ({}) => {
                 {text.labelOponentCards}
               </span>
               <span className={"my-2 text-xl self-center"}>{countCardPC}</span>
+              <Button
+                title={text.labelDesistir}
+                className={"!m-0 !w-full"}
+                onClick={async () => await dropMatch()}
+              />
             </div>
             {/* ///////////////////////////////////////////Cards //////////////////////////////*/}
             <div className={"h-full w-full flex justify-center items-center"}>
@@ -232,8 +274,22 @@ const Game = ({}) => {
                     brincalhao={card.brincalhao}
                     beleza={card.beleza}
                     lineDisabled={false}
-                    setAtributo={setAtributo}
                     isFlip={flip2}
+                    playFofura={async (e: React.FormEvent<HTMLFormElement>) =>
+                      await play(e, "fofura")
+                    }
+                    playLifeSpan={async (e: React.FormEvent<HTMLFormElement>) =>
+                      await play(e, "life_span")
+                    }
+                    playLifeFome={async (e: React.FormEvent<HTMLFormElement>) =>
+                      await play(e, "fome")
+                    }
+                    playBrincalhao={async (
+                      e: React.FormEvent<HTMLFormElement>
+                    ) => await play(e, "brincalhao")}
+                    playBeleza={async (e: React.FormEvent<HTMLFormElement>) =>
+                      await play(e, "beleza")
+                    }
                   />
                 }
                 flip={flip2}
@@ -247,8 +303,23 @@ const Game = ({}) => {
                 botton={
                   <Button
                     title={text.labelButtonNext}
-                    onClick={async (e) => await play(e)}
-                    // disabled={atributo.value ? false : true}
+                    onClick={
+                      userTurn
+                        ? () => alertUserTurn()
+                        : async (e) => await play(e, "")
+                    }
+                  />
+                }
+              />
+            </div>
+            <div className={"hidden sm:block  absolute top-0 right-0"}>
+              <Card
+                title={text.labelDesistir}
+                content={""}
+                botton={
+                  <Button
+                    title={text.labelDrop}
+                    onClick={async () => await dropMatch()}
                   />
                 }
               />
@@ -269,7 +340,11 @@ const Game = ({}) => {
               <Button
                 title={text.labelButtonNext}
                 className={"!m-0 !w-full"}
-                onClick={async (e) => await play(e)}
+                onClick={
+                  userTurn
+                    ? () => alertUserTurn()
+                    : async (e) => await play(e, "")
+                }
                 // disabled={atributo.value ? false : true}
               />
             </div>
@@ -277,6 +352,22 @@ const Game = ({}) => {
         }
       />
     </>
+  );
+};
+
+const TurnIdentifier = ({ isPlayerTurn }: TurnIdentifier) => {
+  return isPlayerTurn ? (
+    <div className={"flex justify-center"}>
+      <div className="border border-green-700 bg-green-500 rounded-xl py-2 px-4 text-2xl text-black w-[calc(300px)] absolute top-16 text-center">
+        {text.labelPlayerTurnIdentifier}
+      </div>
+    </div>
+  ) : (
+    <div className={"flex justify-center"}>
+      <div className="border border-orange-700 bg-orange-500 rounded-xl py-2 px-4 text-2xl text-black w-[calc(300px)] absolute top-16 text-center">
+        {text.labelPCTurnIdentifier}
+      </div>
+    </div>
   );
 };
 

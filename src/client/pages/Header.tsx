@@ -32,7 +32,7 @@ const Header = () => {
         // <Link to="/game" className={" text-2xl hover:text-orange-700"}>
         //   {text.play}
         // </Link>,
-        <Link to="/" className={" text-2xl hover:text-orange-700"}>
+        <Link to="/highscore" className={" text-2xl hover:text-orange-700"}>
           {text.highscore}
         </Link>,
         <Link to="/cartas" className={" text-2xl hover:text-orange-700"}>

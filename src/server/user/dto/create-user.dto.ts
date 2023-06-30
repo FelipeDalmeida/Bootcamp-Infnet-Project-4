@@ -12,7 +12,7 @@ export class CreateUserDto {
   name: string | undefined;
 
   @MinLength(3)
-  @MaxLength(20)
+  @MaxLength(12)
   username: string | undefined;
 
   @MinLength(4)

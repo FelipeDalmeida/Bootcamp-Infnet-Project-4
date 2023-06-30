@@ -162,7 +162,6 @@ export class PlayService {
   };
 
   async jogada(user: IUser, atributo?: { value: keyof ICards }) {
-    console.log(atributo);
     const username = user.username;
     const match = await this.playRepository.findMatch(username);
     if (match) {
@@ -293,6 +292,19 @@ export class PlayService {
       } else {
         return false;
       }
+    }
+  }
+
+  async desistir(user: IUser) {
+    const response = await this.playRepository.delete(user.username);
+    if (response) {
+      return {
+        success: true,
+      };
+    } else {
+      return {
+        success: false,
+      };
     }
   }
 }

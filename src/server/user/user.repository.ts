@@ -12,6 +12,11 @@ export class UserRepository {
     return users;
   }
 
+  async findHighscores() {
+    const highscores = await User.find().sort({ score: "desc" }).lean();
+    return highscores;
+  }
+
   async findOne(username: string) {
     const user = await User.findOne({ username }).lean();
     return user;
@@ -23,15 +28,20 @@ export class UserRepository {
   }
 
   async update(username: string, updateuserdto: UpdateUserDto) {
-    const user = await User.findOneAndUpdate(
-      { username },
-      updateuserdto
-    ).lean();
+    console.log(updateuserdto);
+    const user = await User.findOneAndUpdate({ username }, updateuserdto, {
+      new: true,
+    }).lean();
     return user;
   }
 
   async delete(username: string) {
-    const user = await User.findOneAndDelete({ username }).lean();
+    const user = await User.findOneAndDelete(
+      { username },
+      {
+        new: true,
+      }
+    ).lean();
     return user;
   }
 }

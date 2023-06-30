@@ -23,8 +23,8 @@ export class RegisterDto {
   @MinLength(2, {
     message: "Username muito curto, mínimo de 2 caracteres",
   })
-  @MaxLength(24, {
-    message: "Username muito longo, máximo de 24 caracteres",
+  @MaxLength(12, {
+    message: "Username muito longo, máximo de 12 caracteres",
   })
   @IsString()
   username: string | undefined;

@@ -30,6 +30,13 @@ export class UserController {
   }
 
   @Authorized()
+  @Get("/highscores")
+  async findHighscores() {
+    const highscores = await this.userService.findHighscores();
+    return highscores;
+  }
+
+  @Authorized()
   @Get("/:username")
   async getOne(@Param("username") username: string) {
     const user = await this.userService.findOne(username);
@@ -44,20 +51,23 @@ export class UserController {
   }
 
   @Authorized()
-  @Patch("/:username")
+  @Patch()
   async update(
-    @Param("username") username: string,
+    @CurrentUser() user: IUser,
     @Body() updateuserdto: UpdateUserDto
   ) {
-    const user = await this.userService.update(username, updateuserdto);
-    return user;
+    const patchedUser = await this.userService.update(
+      user.username,
+      updateuserdto
+    );
+    return patchedUser;
   }
 
   @Authorized()
-  @Delete("/:username")
-  async delete(@Param("username") username: string) {
-    const user = await this.userService.delete(username);
-    return user;
+  @Delete("/")
+  async delete(@CurrentUser() user: IUser) {
+    const deletdUser = await this.userService.delete(user.username);
+    return deletdUser;
   }
 
   @Authorized()

@@ -23,6 +23,22 @@ export class UserService {
     }
   }
 
+  async findHighscores() {
+    const highscores = await this.userRepository.findHighscores();
+    if (highscores) {
+      return {
+        success: true,
+        data: {
+          ...highscores, //@TODO:Enviar apenas as informações necessárias
+        },
+      };
+    } else {
+      return {
+        success: false,
+      };
+    }
+  }
+
   async findOne(username: string) {
     const user = await this.userRepository.findOne(username);
     if (user) {

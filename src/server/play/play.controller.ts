@@ -35,4 +35,11 @@ export class PlayController {
     const turn = await this.playService.jogada(user, atributo);
     return turn;
   }
+
+  @Authorized()
+  @Post("/drop")
+  async desistir(@CurrentUser() user: IUser) {
+    const response = await this.playService.desistir(user);
+    return response;
+  }
 }

@@ -14,7 +14,7 @@ export class UpdateUserDto {
 
   @IsOptional()
   @MinLength(3)
-  @MaxLength(20)
+  @MaxLength(12)
   username: string | undefined;
 
   @IsOptional()
