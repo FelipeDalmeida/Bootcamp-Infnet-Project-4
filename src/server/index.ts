@@ -5,10 +5,11 @@ import { createExpressServer, useContainer } from "routing-controllers";
 import { UserController } from "./user/user.controller";
 import { connect } from "mongoose";
 import { AuthController } from "./auth/auth.controller";
-import { authorizationChecker } from "./auth/authorization.checker";
-import { currentUserChecker } from "./auth/currentuser.checker";
 import { CardsController } from "./cards/cards.controller";
 import { PlayController } from "./play/play.controller";
+import { authorizationChecker } from "./auth/authorization.checker";
+import { currentUserChecker } from "./auth/currentuser.checker";
+
 dotenv.config();
 
 useContainer(Container);
